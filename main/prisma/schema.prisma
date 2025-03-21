@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// 📌 Users Table (Patients)
+model User {
+  id         String   @id @default(uuid()) // Unique user ID
+  name       String   
+  age        Int
+  bloodGroup BloodGroup
+  sex        Gender
+  address    String
+  metadata   Json?  // Optional metadata for flexibility
+  createdAt  DateTime @default(now())
+
+  // Relationships
+  medicalCases      MedicalCase[]
+  medicineRequests  MedicineRequest[]
+
+  @@map("users") // Table name in Supabase
+}
+
+// 📌 Medical Cases Table (Lab Reports & Issues)
+model MedicalCase {
+  id              String   @id @default(uuid())
+  userId          String
+  problemDesc     String
+  problemDate     DateTime @default(now())
+  labReportName   String?
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("medical_cases")
+}
+
+// 📌 Medicine Requests Table
+model MedicineRequest {
+  id                String   @id @default(uuid())
+  userId            String
+  requestedMedicine String
+  requestTime       DateTime @default(now())
+  isPickedUp        Boolean  @default(false)
+  sellerId          String?  // Nullable (only filled when a seller picks it up)
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seller           Seller?   @relation(fields: [sellerId], references: [id])
+
+  @@map("medicine_requests")
+}
+
+// 📌 Sellers Table (Pharmacies, Blood Banks)
+model Seller {
+  id          String   @id @default(uuid())
+  name        String   
+  location    String
+  shopAddress String
+  createdAt   DateTime @default(now())
+
+  // Relationships
+  medicineRequests  MedicineRequest[]
+
+  @@map("sellers")
+}
+
+// 📌 Enums
+enum BloodGroup {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  AB_POS
+  AB_NEG
+  O_POS
+  O_NEG
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
