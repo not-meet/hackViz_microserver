@@ -74,18 +74,16 @@ model Seller {
   @@map("sellers")
 }
 
-// 📌 Enums
 enum BloodGroup {
-  A_POS
-  A_NEG
-  B_POS
-  B_NEG
-  AB_POS
-  AB_NEG
-  O_POS
-  O_NEG
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
 }
-
 enum Gender {
   Male
   Female
