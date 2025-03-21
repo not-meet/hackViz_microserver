@@ -1,10 +1,10 @@
 "use server"
 
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-export async function PATCH(req: Request, { params }: { params: { sellerId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: { sellerId: string } }) {
   try {
     const body = await req.json();
     const updatedSeller = await prisma.seller.update({
@@ -19,7 +19,7 @@ export async function PATCH(req: Request, { params }: { params: { sellerId: stri
 }
 
 // 📌 DELETE: Remove a seller
-export async function DELETE(req: Request, { params }: { params: { sellerId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { sellerId: string } }) {
   try {
     await prisma.seller.delete({ where: { id: params.sellerId } });
     return NextResponse.json({ success: true, message: "Seller deleted successfully" });

@@ -1,5 +1,5 @@
 "use server"
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { BloodGroup, Gender, PrismaClient } from "@prisma/client";
 import { Record } from "@prisma/client/runtime/library";
 
@@ -16,7 +16,7 @@ export async function GET() {
 }
 
 // 📌 POST: Create a new user
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 

@@ -1,12 +1,12 @@
 "use server"
 
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // 📌 POST: Create a new seller
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const newSeller = await prisma.seller.create({ data: body });

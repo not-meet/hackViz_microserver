@@ -1,12 +1,12 @@
 "use server"
 
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // 📌 GET: Fetch all medical reports of a specific user
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
   try {
     const reports = await prisma.medicalCase.findMany({
       where: { userId: params.userId },
@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
 }
 
 // 📌 POST: Add a new medical report
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const newReport = await prisma.medicalCase.create({ data: body });

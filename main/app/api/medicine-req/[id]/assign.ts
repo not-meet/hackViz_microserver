@@ -1,11 +1,11 @@
 "use server"
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function PATCH(req: Request, { params }: { params: { requestId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: { requestId: string } }) {
 
   try {
     const { sellerId } = await req.json();

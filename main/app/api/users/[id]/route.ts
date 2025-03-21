@@ -1,11 +1,11 @@
 "use server"
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: params.id },
@@ -22,7 +22,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // 📌 PUT: Update a user
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await req.json();
     const updatedUser = await prisma.user.update({
@@ -37,7 +37,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 // 📌 DELETE: Remove a user
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await prisma.user.delete({ where: { id: params.id } });
 

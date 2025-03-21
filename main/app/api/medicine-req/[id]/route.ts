@@ -1,11 +1,11 @@
 "use server"
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
   try {
     const requests = await prisma.medicineRequest.findMany({
       where: { userId: params.userId },
@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
 }
 
 // 📌 DELETE: Remove a medicine request
-export async function DELETE(req: Request, { params }: { params: { requestId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { requestId: string } }) {
   try {
     await prisma.medicineRequest.delete({ where: { id: params.requestId } });
 
