@@ -1,3 +1,4 @@
+
 "use server";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -6,9 +7,13 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 // 📌 GET: Fetch a single medical report by ID
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } } | any) {
   try {
-    const { id } = context.params;
+    const id = params?.id;
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing report ID" }, { status: 400 });
+    }
 
     const report = await prisma.medicalCase.findUnique({
       where: { id },
@@ -26,9 +31,14 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 }
 
 // 📌 PUT: Update a medical report
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } } | any) {
   try {
-    const { id } = context.params;
+    const id = params?.id;
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing report ID" }, { status: 400 });
+    }
+
     const body = await req.json();
 
     const updatedReport = await prisma.medicalCase.update({
