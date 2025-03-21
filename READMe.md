@@ -14,33 +14,33 @@ The MedConnect application uses PostgreSQL as the database, managed through Pris
 ## Database Schema Diagram
 
 ```
-┌─────────────────────┐       ┌─────────────────────┐
-│       users         │       │   medical_cases     │
-├─────────────────────┤       ├─────────────────────┤
-│ id (PK)             │       │ id (PK)             │
-│ name                │       │ userId (FK)         │
-│ age                 │       │ problemDesc         │
-│ bloodGroup          │       │ problemDate         │
-│ sex                 │       │ labReportName       │
-│ address             │       └─────────────────────┘
-│ metadata            │                ▲
-│ createdAt           │                │
-└─────────────────────┘                │
-         ▲                             │
-         │                             │
-         │         ┌──────────────────┐│
-         │         │                   │
-         │         │                   │
-┌────────┴──────────┐       ┌─────────┴─────────┐
-│ medicine_requests  │       │     sellers       │
-├───────────────────┤       ├───────────────────┤
-│ id (PK)           │       │ id (PK)           │
-│ userId (FK)       │       │ name              │
-│ requestedMedicine │       │ location          │
-│ requestTime       │       │ shopAddress       │
-│ isPickedUp        │       │ createdAt         │
-│ sellerId (FK)     │──────►│                   │
-└───────────────────┘       └───────────────────┘
+┌─────────────────────┐      ┌─────────────────────┐
+│       users         │      │   medical_cases     │
+├─────────────────────┤      ├─────────────────────┤
+│ id (PK)             │      │ id (PK)             │
+│ name                │      │ userId (FK)         │
+│ age                 │      │ problemDesc         │
+│ bloodGroup          │      │ problemDate         │
+│ sex                 │      │ labReportName       │
+│ address             │      └─────────────────────┘
+│ metadata            │              ▲
+│ createdAt           │              │
+└─────────────────────┘              │
+         ▲                           │
+         │                           │
+         │         ┌─────────────────│
+         │         │                 │
+         │         │                 │
+┌────────┴──────────┐      ┌─────────┴─────────┐
+│ medicine_requests │      │     sellers       │
+├───────────────────┤      ├───────────────────┤
+│ id (PK)           │      │ id (PK)           │
+│ userId (FK)       │      │ name              │
+│ requestedMedicine │      │ location          │
+│ requestTime       │      │ shopAddress       │
+│ isPickedUp        │      │ createdAt         │
+│ sellerId (FK)     │──────│                   │
+└───────────────────┘      └───────────────────┘
 ```
 
 ## Table Structures
