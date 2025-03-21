@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
 // 📌 GET: Fetch a single medical report by ID
 export async function GET(req: NextRequest, { params }: { params: { id: string } } | any) {
   try {
