@@ -1,15 +1,16 @@
-"use server"
+"use server";
 
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
+// 📌 GET: Fetch all medicine requests for a user (Fix params to match `[id]`)
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const requests = await prisma.medicineRequest.findMany({
-      where: { userId: params.userId },
-      include: { seller: true }, // Include seller details if assigned
+      where: { userId: params.id }, // Use `id` instead of `userId`
+      include: { seller: true },
     });
 
     return NextResponse.json({ success: true, data: requests });
@@ -18,10 +19,10 @@ export async function GET(req: NextRequest, { params }: { params: { userId: stri
   }
 }
 
-// 📌 DELETE: Remove a medicine request
-export async function DELETE(req: NextRequest, { params }: { params: { requestId: string } }) {
+// 📌 DELETE: Remove a medicine request (Fix params to match `[id]`)
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await prisma.medicineRequest.delete({ where: { id: params.requestId } });
+    await prisma.medicineRequest.delete({ where: { id: params.id } }); // Use `id` instead of `requestId`
 
     return NextResponse.json({ success: true, message: "Request deleted successfully" });
   } catch (error) {
