@@ -5,10 +5,17 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   try {
+    const url = new URL(req.url); // Create a URL object from the request URL
+    const id = url.searchParams.get('id'); // Get the 'id' parameter from the query string
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+    }
+
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!user) {
@@ -22,11 +29,18 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // 📌 PUT: Update a user
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
   try {
+    const url = new URL(req.url); // Create a URL object from the request URL
+    const id = url.searchParams.get('id'); // Get the 'id' parameter from the query string
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+    }
+
     const body = await req.json();
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     });
 
@@ -37,10 +51,16 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // 📌 DELETE: Remove a user
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
   try {
-    await prisma.user.delete({ where: { id: params.id } });
+    const url = new URL(req.url); // Create a URL object from the request URL
+    const id = url.searchParams.get('id'); // Get the 'id' parameter from the query string
 
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+    }
+
+    await prisma.user.delete({ where: { id } });
     return NextResponse.json({ success: true, message: "User deleted successfully" });
   } catch (error) {
     return NextResponse.json({ success: false, error: "Failed to delete user" }, { status: 500 });
