@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 // 📌 GET: Fetch all medicine requests for a user (Fix params to match `[id]`)
 export async function GET(req: NextRequest, context: { params: { id: string } }) {
   try {
-    const { id } = context.params; // Extract `id` correctly
+    const id = context.params.id; // Extract `id` correctly
 
     const requests = await prisma.medicineRequest.findMany({
       where: { userId: id }, // Use `id` instead of `userId`
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 // 📌 DELETE: Remove a medicine request
 export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
   try {
-    const { id } = context.params; // Correct `id` extraction
+    const id = context.params.id; // Correct `id` extraction
 
     await prisma.medicineRequest.delete({ where: { id } });
 
