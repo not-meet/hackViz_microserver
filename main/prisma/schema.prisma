@@ -19,10 +19,10 @@ model User {
   id         String   @id @default(uuid()) // Internal unique user ID
   clerkId    String   @unique  // Clerk's user ID (ensure uniqueness)
   name       String   
-  age        Int
-  bloodGroup BloodGroup
-  sex        Gender
-  address    String
+  age        Int?
+  bloodGroup BloodGroup?
+  sex        Gender?
+  address    String?
   metadata   Json?  
   createdAt  DateTime @default(now())
 
