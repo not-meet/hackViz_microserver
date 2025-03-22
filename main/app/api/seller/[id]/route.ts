@@ -4,11 +4,17 @@ import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-export async function PATCH(req: NextRequest, { params }: { params: { sellerId: string } }) {
+export async function PATCH(req: NextRequest) {
   try {
+    const url = new URL(req.url); // Create a URL object from the request URL
     const body = await req.json();
+    const id = url.searchParams.get('id'); // Get the 'id' parameter from the query string
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+    }
     const updatedSeller = await prisma.seller.update({
-      where: { id: params.sellerId },
+      where: { id },
       data: body,
     });
 
