@@ -25,9 +25,16 @@ export async function PATCH(req: NextRequest) {
 }
 
 // 📌 DELETE: Remove a seller
-export async function DELETE(req: NextRequest, { params }: { params: { sellerId: string } }) {
+export async function DELETE(req: NextRequest) {
   try {
-    await prisma.seller.delete({ where: { id: params.sellerId } });
+    const url = new URL(req.url); // Create a URL object from the request URL
+    const id = url.searchParams.get('id'); // Get the 'id' parameter from the query string
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+    }
+
+    await prisma.seller.delete({ where: { id } });
     return NextResponse.json({ success: true, message: "Seller deleted successfully" });
   } catch (error) {
     return NextResponse.json({ success: false, error: "Failed to delete seller" }, { status: 500 });
