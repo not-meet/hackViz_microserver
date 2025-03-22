@@ -20,6 +20,10 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    if (!body.clerkId) {
+      return NextResponse.json({ success: false, error: "Missing Clerk ID" }, { status: 400 });
+    }
+
     // 🔹 Convert blood group format to match Prisma enum
     const bloodGroupMap: Record<string, BloodGroup> = {
       "O+": BloodGroup.O_POS, "O-": BloodGroup.O_NEG,
@@ -38,9 +42,17 @@ export async function POST(req: NextRequest) {
     if (!Object.values(Gender).includes(formattedSex as Gender)) {
       return NextResponse.json({ success: false, error: "Invalid gender" }, { status: 400 });
     }
+    const existingUser = await prisma.user.findUnique({
+      where: { clerkId: body.clerkId },
+    });
+
+    // if (existingUser) {
+    //   return NextResponse.json({ success: false, error: "User with this Clerk ID already exists" }, { status: 409 });
+    // }
 
     const newUser = await prisma.user.create({
       data: {
+        clerkId: body.clerkId,
         name: body.name,
         age: body.age,
         bloodGroup: bloodGroupMap[body.bloodGrp], // Convert blood group

@@ -16,13 +16,14 @@ datasource db {
 
 // 📌 Users Table (Patients)
 model User {
-  id         String   @id @default(uuid()) // Unique user ID
+  id         String   @id @default(uuid()) // Internal unique user ID
+  clerkId    String   @unique  // Clerk's user ID (ensure uniqueness)
   name       String   
   age        Int
   bloodGroup BloodGroup
   sex        Gender
   address    String
-  metadata   Json?  // Optional metadata for flexibility
+  metadata   Json?  
   createdAt  DateTime @default(now())
 
   // Relationships
@@ -31,7 +32,6 @@ model User {
 
   @@map("users") // Table name in Supabase
 }
-
 // 📌 Medical Cases Table (Lab Reports & Issues)
 model MedicalCase {
   id              String   @id @default(uuid())
