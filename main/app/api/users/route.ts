@@ -2,6 +2,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { BloodGroup, Gender, PrismaClient } from "@prisma/client";
 import { Record } from "@prisma/client/runtime/library";
+import Error from "next/error";
 
 const prisma = new PrismaClient();
 
@@ -96,39 +97,35 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Missing Clerk ID" }, { status: 400 });
     }
 
-    // Get the request body
     const body = await req.json();
 
-    // First check if the user exists
-    const existingUser = await prisma.user.findUnique({
+    // Use upsert instead of update
+    const result = await prisma.user.upsert({
       where: { clerkId },
-    });
-
-    if (!existingUser) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
-    }
-
-    // Now update only the fields provided in the request
-    const updatedUser = await prisma.user.update({
-      where: { clerkId },
-      data: {
-        // Only update fields that are provided in the request
-        age: body.age !== undefined ? body.age : undefined,
-        bloodGroup: body.bloodGroup !== undefined ? body.bloodGroup : undefined,
-        sex: body.sex !== undefined ? body.sex : undefined,
-        address: body.address !== undefined ? body.address : undefined,
-        metadata: body.metadata !== undefined ? body.metadata : undefined,
+      update: {
+        age: body.age || undefined,
+        bloodGroup: body.bloodGroup || undefined,
+        sex: body.sex || undefined,
+        address: body.address || undefined,
+        metadata: body.metadata || undefined,
+      },
+      create: {
+        clerkId,
+        name: body.name || "User", // Provide a default for required fields
+        age: body.age || null,
+        bloodGroup: body.bloodGroup || null,
+        sex: body.sex || null,
+        address: body.address || null,
+        metadata: body.metadata || {},
       },
     });
 
-    return NextResponse.json({ success: true, data: updatedUser });
-  } catch (error) {
-    console.error("Update error:", error);
-    // Return the actual error message for debugging
+    return NextResponse.json({ success: true, data: result });
+  } catch (error: any) {
+    console.error("Error:", error);
     return NextResponse.json({
       success: false,
-      error: "Failed to update user",
-      details: JSON.stringify(error)
+      error: error.message
     }, { status: 500 });
   }
 }
