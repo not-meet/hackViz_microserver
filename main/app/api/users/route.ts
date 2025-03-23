@@ -85,3 +85,43 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: "Failed to create user" }, { status: 500 });
   }
 }
+
+// 📌 PUT: Update a user
+export async function PUT(req: NextRequest,) {
+  try {
+    const url = new URL(req.url);
+    const clerkId = url.searchParams.get('clerkId'); // Changed from 'id' to 'clerkId'
+
+    if (!clerkId) {
+      return NextResponse.json({ success: false, error: "Missing Clerk ID" }, { status: 400 });
+    }
+
+    const body = await req.json();
+    const updatedUser = await prisma.user.update({
+      where: { clerkId }, // Changed from 'id' to 'clerkId'
+      data: body,
+    });
+
+    return NextResponse.json({ success: true, data: updatedUser });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: "Failed to update user" }, { status: 500 });
+  }
+}
+
+// 📌 DELETE: Remove a user
+export async function DELETE(req: NextRequest) {
+  try {
+    const url = new URL(req.url);
+    const clerkId = url.searchParams.get('clerkId'); // Changed from 'id' to 'clerkId'
+
+    if (!clerkId) {
+      return NextResponse.json({ success: false, error: "Missing Clerk ID" }, { status: 400 });
+    }
+
+    await prisma.user.delete({ where: { clerkId } }); // Changed from 'id' to 'clerkId'
+
+    return NextResponse.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: "Failed to delete user" }, { status: 500 });
+  }
+}
