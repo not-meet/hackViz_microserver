@@ -27,10 +27,13 @@ export async function GET(req: NextRequest) {
 }
 
 // 📌 PUT: Update a user
-export async function PUT(req: NextRequest) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }
+) {
   try {
+    // You can use params.id instead of or in addition to the query parameter
+    const id = params.id;
     const url = new URL(req.url);
-    const clerkId = url.searchParams.get('clerkId'); // Changed from 'id' to 'clerkId'
+    const clerkId = url.searchParams.get('clerkId') || id;
 
     if (!clerkId) {
       return NextResponse.json({ success: false, error: "Missing Clerk ID" }, { status: 400 });
@@ -38,12 +41,13 @@ export async function PUT(req: NextRequest) {
 
     const body = await req.json();
     const updatedUser = await prisma.user.update({
-      where: { clerkId }, // Changed from 'id' to 'clerkId'
+      where: { clerkId },
       data: body,
     });
 
     return NextResponse.json({ success: true, data: updatedUser });
   } catch (error) {
+    console.error("Update error:", error);
     return NextResponse.json({ success: false, error: "Failed to update user" }, { status: 500 });
   }
 }
