@@ -87,27 +87,51 @@ export async function POST(req: NextRequest) {
 }
 
 // 📌 PUT: Update a user
-export async function PUT(req: NextRequest,) {
+export async function PUT(req: NextRequest) {
   try {
     const url = new URL(req.url);
-    const clerkId = url.searchParams.get('clerkId'); // Changed from 'id' to 'clerkId'
+    const clerkId = url.searchParams.get('clerkId');
 
     if (!clerkId) {
       return NextResponse.json({ success: false, error: "Missing Clerk ID" }, { status: 400 });
     }
 
+    // Get the request body
     const body = await req.json();
+
+    // First check if the user exists
+    const existingUser = await prisma.user.findUnique({
+      where: { clerkId },
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+    }
+
+    // Now update only the fields provided in the request
     const updatedUser = await prisma.user.update({
-      where: { clerkId }, // Changed from 'id' to 'clerkId'
-      data: body,
+      where: { clerkId },
+      data: {
+        // Only update fields that are provided in the request
+        age: body.age !== undefined ? body.age : undefined,
+        bloodGroup: body.bloodGroup !== undefined ? body.bloodGroup : undefined,
+        sex: body.sex !== undefined ? body.sex : undefined,
+        address: body.address !== undefined ? body.address : undefined,
+        metadata: body.metadata !== undefined ? body.metadata : undefined,
+      },
     });
 
     return NextResponse.json({ success: true, data: updatedUser });
   } catch (error) {
-    return NextResponse.json({ success: false, error: "Failed to update user" }, { status: 500 });
+    console.error("Update error:", error);
+    // Return the actual error message for debugging
+    return NextResponse.json({
+      success: false,
+      error: "Failed to update user",
+      details: JSON.stringify(error)
+    }, { status: 500 });
   }
 }
-
 // 📌 DELETE: Remove a user
 export async function DELETE(req: NextRequest) {
   try {
